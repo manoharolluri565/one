@@ -6,7 +6,7 @@ pipeline {
         stage('code-checkout') {
             steps {
                     deleteDir()
-                    git 'https://github.com/Suresh5600/one.git'
+                    git 'https://github.com/manoharolluri565/one.git'
             }
         }
 
@@ -18,6 +18,7 @@ pipeline {
 
         stage('Deploy to Tomcat') {
             steps {
+                sh 'cp target/*.war /opt/apache-tomcat-9.0.118/webapps/'
             }
         }
     }
