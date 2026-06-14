@@ -15,7 +15,11 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
             }
         }
-
+stage("Test") {
+    withSonarQubeEnv("sonar") {
+        sh "mvn sonar:sonar"
+    }
+}
         stage('Deploy to Tomcat') {
             steps {
            //     sh 'cp target/*.war /opt/apache-tomcat-9.0.118/webapps/'
