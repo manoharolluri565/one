@@ -3,29 +3,35 @@ pipeline {
 
     stages {
 
-        stage('code-checkout') {
+        stage('Code Checkout') {
             steps {
-                    deleteDir()
-                    git 'https://github.com/manoharolluri565/one.git'
+                deleteDir()
+                git 'https://github.com/manoharolluri565/one.git'
             }
         }
 
-    
-        stage('code-build') {
+        stage('Code Build') {
             steps {
-                    sh 'mvn clean package -DskipTests'
+                sh 'mvn clean package -DskipTests'
             }
         }
-         stage("Test") {
-                     withSonarQubeEnv("sonar") {
-                           sh "mvn sonar:sonar"
-                             }
-}
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+
         stage('Deploy to Tomcat') {
             steps {
-           //     sh 'cp target/*.war /opt/apache-tomcat-9.0.118/webapps/'
-                sshagent(['832957f9-ed9b-4575-84de-6705dcad8bcb'])  {
-                sh 'scp -o StrictHostKeyChecking=no target/*.war root@98.130.120.8:/root/apache-tomcat-9.0.118/webapps/'
+                sshagent(['832957f9-ed9b-4575-84de-6705dcad8bcb']) {
+                    sh '''
+                        scp -o StrictHostKeyChecking=no \
+                        target/*.war \
+                        root@98.130.120.8:/root/apache-tomcat-9.0.118/webapps/
+                    '''
                 }
             }
         }
